@@ -1,0 +1,6 @@
+name: CookiePlugin
+version: ${project.version}
+main: cookie.main.cookieplugin.CookiePlugin
+api-version: 1.16
+authors: [YouKlike]
+description: 這是餅乾的練習用代碼插件
