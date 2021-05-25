@@ -30,6 +30,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,12 +58,10 @@ public final class CookiePlugin
     public final void onPickupItem(final EntityPickupItemEvent event) {
         final LivingEntity entity = event.getEntity();
         final Item item = event.getItem();
-        // LivingEntity 可能是 殭屍、苦力怕、玩家。因為下面的代碼有 強轉類型，所以必須先判斷是否可以強制轉換類型。
         if (entity instanceof Player) {
             final Player player = (Player) entity;
-
             final Player memoryTempPlayer = this.playerItemMap.get(item);
-            if (memoryTempPlayer != null && player == memoryTempPlayer) return ;
+            if (memoryTempPlayer == null || memoryTempPlayer == player) return;
         }
         event.setCancelled(true);
     }
@@ -72,6 +71,12 @@ public final class CookiePlugin
         final Player player = event.getPlayer();
         final Item itemDrop = event.getItemDrop();
         this.playerItemMap.put(itemDrop, player);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                playerItemMap.remove(itemDrop);
+            }
+        }.runTaskLater(this, 30 * 20L);
     }
 
 }
